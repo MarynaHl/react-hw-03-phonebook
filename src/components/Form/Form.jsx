@@ -59,6 +59,6 @@ export default class Form extends Component {
   }
 }
 
-Filter.propTypes = {
+Form.propTypes = {
   onSubmit: PropTypes.func,
 };
