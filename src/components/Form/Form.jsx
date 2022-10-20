@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import PropTypes from 'prop-types';
 import { FormTag, InputField, FormBtn } from './Form.styled';
 
 export default class Form extends Component {
@@ -57,3 +58,7 @@ export default class Form extends Component {
     );
   }
 }
+
+Filter.propTypes = {
+  onSubmit: PropTypes.func,
+};

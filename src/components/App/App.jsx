@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import { nanoid } from 'nanoid';
+import toast, { Toaster } from 'react-hot-toast';
 
 import Form from '../Form';
 import Contacts from '../Contacts';
@@ -7,14 +8,11 @@ import Filter from '../Filter';
 
 import { Container, TitleMain, TitleSecond } from './App.styled';
 
+const LS_KEY = 'contacts';
+
 class App extends Component {
   state = {
-    contacts: [
-      { id: '111', name: 'Michael Jackson', number: '111-11-11' },
-      { id: '222', name: 'Bob Marley', number: '222-22-22' },
-      { id: '333', name: 'Tina Turner', number: '333-33-33' },
-      { id: '444', name: 'ssv', number: '444-33-33' },
-    ],
+    contacts: [],
     filter: '',
   };
 
@@ -27,7 +25,7 @@ class App extends Component {
     );
 
     if (isFoundName) {
-      alert(`${data.name} is already in contacts.`);
+      toast.error(`${data.name} is already in contacts!`);
       return;
     }
 
@@ -38,6 +36,7 @@ class App extends Component {
         contacts: [...prevState.contacts, newData],
       };
     });
+    toast.success('Successfully added!');
   };
 
   changeFilter = evt => {
@@ -50,6 +49,28 @@ class App extends Component {
     }));
   };
 
+  // The number of entries in the Phonebook has changed!!!
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.contacts.length !== this.state.contacts.length) {
+      localStorage.setItem(LS_KEY, JSON.stringify(this.state.contacts));
+
+      if (this.state.contacts.length === 0) {
+        toast.error('Phonebook is empty!');
+      }
+    }
+  }
+
+  // first render Phonebook
+  componentDidMount() {
+    const contacts = localStorage.getItem(LS_KEY);
+    const parsedContacts = JSON.parse(contacts);
+
+    // if there are entries in the local storage, write them to the state
+    if (parsedContacts) {
+      this.setState({ contacts: parsedContacts });
+    }
+  }
+
   render() {
     // for filter
     const { filter, contacts } = this.state;
@@ -60,6 +81,14 @@ class App extends Component {
 
     return (
       <Container>
+        <Toaster
+          toastOptions={{
+            style: {
+              border: '1px solid #713200',
+              padding: '16px',
+            },
+          }}
+        />
         <TitleMain>Phonebook</TitleMain>
         <Form onSubmit={this.formSubmitHandler} />
         <TitleSecond>Contacts</TitleSecond>

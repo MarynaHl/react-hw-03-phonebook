@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 import { FilterInput } from './Filter.styled.jsx';
 
 const Filter = ({ value, onChange }) => (
@@ -7,3 +9,8 @@ const Filter = ({ value, onChange }) => (
   </FilterInput>
 );
 export default Filter;
+
+Filter.propTypes = {
+  value: PropTypes.string.isRequired,
+  onChange: PropTypes.func,
+};
